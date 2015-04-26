@@ -3,22 +3,31 @@ getwd()
 
 library(data.table)
 
-# Read data from source
+# Fetch data from source
+dataSource <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+dataDestination <- "munging.zip"
+
+download.file(dataSource, dataDestination, mode="wb")
+
+# Unzip
+unzip(dataDestination)
+
+# Read files
 
 # Merge train and test sets
 # Data: 561 variables in each set
-x.train <- read.table("x_train.txt")              # 7352 obs.
-x.test <- read.table("x_test.txt")                # 2947 obs.
+x.train <- read.table(".\\UCI HAR Dataset\\train\\x_train.txt")       # 7352 obs.
+x.test <- read.table(".\\UCI HAR Dataset\\test\\x_test.txt")           # 2947 obs.
 
 # Training Labels: WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, 
 #                   SITTING, STANDING, LAYING
 # See: activity_labels.txt 
-y.train <- read.table("y_train.txt")              # 1 through 6
-y.test <- read.table("y_test.txt")                # 1 through 6
+y.train <- read.table(".\\UCI HAR Dataset\\train\\y_train.txt")       # 1 through 6
+y.test <- read.table(".\\UCI HAR Dataset\\test\\y_test.txt")           # 1 through 6
 
 # Subject labels
-subject.train <- read.table("subject_train.txt")  # 21 subjects
-subject.test <- read.table("subject_test.txt")    # 9 subjects
+subject.train <- read.table(".\\UCI HAR Dataset\\train\\subject_train.txt")  # 21 subjects
+subject.test <- read.table(".\\UCI HAR Dataset\\test\\subject_test.txt")    # 9 subjects
 
 set.train = cbind(subject.train, y.train, x.train)  # Assemble training set
 set.test = cbind(subject.test, y.test, x.test)      # Assemble testing set
@@ -60,23 +69,6 @@ out <- dt[, lapply(.SD, mean, na.rm=TRUE),
 setkey(out, "Subject")
 df <- data.frame(out)
 dim(df)
-library(plyr)
-out <- ddply(x.set.mean.std, 
-             c("Subject", "ActivityName"), 
-             summarize, 
-             mean(x.set.mean.std[,4]))
 
-# Alt. use Split-Apply-Combine
-# Split
-pieces <- split(x.set.mean.std, 
-                list(x.set.mean.std$Subject, x.set.mean.std$ActivityName))
-result <- matrix(nrow=0, ncol=dim(pieces[[1]])[2]-3)
-colnames(result) <- names(pieces[[1]])[3:81]
-for (i in seq_along(pieces)) {
-  piece <- pieces[[i]][3:81]
-  means <- apply(piece, 2, mean)
-  result <- rbind(result, means)
-}
-result <- as.data.frame(result)
-
-# Apply
+# Write output table
+write.table(df, "tidy_output.txt", sep="\t", row.names=FALSE)

@@ -34,7 +34,7 @@ set.test = cbind(subject.test, y.test, x.test)      # Assemble testing set
 x.set <- rbind(set.train, set.test)                 # Merge train and test sets
 
 # Give descriptive labels
-x.names <- read.table("features.txt")
+x.names <- read.table(".\\UCI HAR Dataset\\features.txt")
 x.labels <- c("Subject", "Activity", as.character(x.names[["V2"]]))
 
 colnames(x.set) <- x.labels
@@ -51,7 +51,7 @@ x.set.mean.std                                      # 10299 obs of 79 variables,
 
 # Add descriptive activity label
 
-activity.labels <- read.table("activity_labels.txt")  # 2947 obs.
+activity.labels <- read.table(".\\UCI HAR Dataset\\activity_labels.txt")  
 colnames(activity.labels) <- c("Activity", "ActivityName")
 
 x.set.mean.std <- merge(x.set.mean.std, activity.labels, by="Activity")

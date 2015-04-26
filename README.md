@@ -54,9 +54,15 @@ The features of `data.table` come in handy for this purpose. I have preferred th
 2. Use `.SDcols` to tweak this behavior and include only variables
 3. Use `by` to segment the analysis by subject (1:30) and activity (1:6)
 
-The output is a data table `out` converted to data frame `df`. Finally, `write.table` generates the tidy output file, **tidy_output** (.txt) on disk.
+The output is a data table `out` converted to data frame `df`. Finally, `write.table` generates the tidy output file, **tidy_output** (.txt) on disk. The file has 180 rows (30 subjects x 6 activities), and 81 columns, summarizing the data for that subject-activity combination. The 79 variables are each in a column, with 1 column for subject id and one for activity descriptor. Thus, 81 columns in all.
 
+### Conclusion
+Criteria for tidy data:
 
+1. Each variable you measure should be in one column.
+2. Each different observation of that variable should be in a different row.
+
+The outut of this script generates a table with 180 rows and 81 columns. The rows summarize the data for each subject and each activity for each of 79 variables. Each row is a different observation of 30 subjects x 6 activities. The 79 vairables are each in a column, with one column for the subject identfier and another for the activity descriptor. Thus, there are 81 columns in all.
 
 
 
